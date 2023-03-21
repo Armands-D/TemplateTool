@@ -31,10 +31,6 @@ def get(templates) -> None:
 @cli.command()
 @click.argument('templates', nargs=-1, type=click.Path(exists=True))
 def put(templates) -> None:
-    if len(templates) == 0:
-        #TODO: Add current directory
-        ...
-
     for template in templates:
         template_path: str = os.path.abspath(template)
         if os.path.isdir(template_path):
@@ -42,12 +38,13 @@ def put(templates) -> None:
                 click.echo("Error: Recursive Directory")
                 return
             click.echo(template_path)
+            click.echo("Templates Copied:")
             list_dir(template_path)
-            click.echo(template_path in TEMPLATES_HOME_DIR)
-            # TODO: Fix recursion issue
-            #copy_tree(f"{template_path}", f"{TEMPLATES_HOME_DIR}/{template_dir_name}")
+            template_name: str = template_path.split("/")[-1]
+            copy_tree(f"{template_path}", f"{TEMPLATES_HOME_DIR}/{template_name}")
             break
         elif os.path.isfile(template):
+            click.echo("TODO: No Impl")
             break
         
         click.echo("Error: Not a directory")
