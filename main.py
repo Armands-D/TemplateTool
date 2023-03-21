@@ -11,8 +11,9 @@ TEMPLATES_HOME_DIR=f"{script_dir}/templates"
 def cli():
     ...
 
-def comp(context, param, incomplete):
-    return ["apple", "bacon"]
+def getTemplateNames(context, param, incomplete):
+    return ["1", "2"]
+
 
 @cli.command()
 @click.argument('templates', nargs=-1)
@@ -27,10 +28,10 @@ def put(templates) -> None:
         ...
 
 @cli.command()
-@click.argument('tmp', nargs=-1, type=click.STRING, shell_complete=comp)
+@click.argument('tmp', nargs=-1, type=click.STRING, shell_complete=getTemplateNames)
 def list(tmp) -> None:
     print("Templates List:")
-    [print(d) for d in os.listdir(TEMPLATES_HOME_DIR)]
+    for d in os.listdir(TEMPLATES_HOME_DIR):print(d)
 
 if __name__ == '__main__':
     cli()
