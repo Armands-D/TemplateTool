@@ -1,0 +1,8 @@
+<template>
+<example name=1>
+  <node/> 
+  <node/> 
+  <node/> 
+  <node/> 
+</example>
+</template>
