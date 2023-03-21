@@ -25,7 +25,7 @@ source-rc:
 	source ~/.zshrc
 
 virtual-install-pack: 
-	virtualenv venv
-	. venv/bin/activate
+	virtualenv setup/venv
+	. setup/venv/bin/activate
 	pip install --editable .
 
