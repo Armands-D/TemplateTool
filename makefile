@@ -9,7 +9,7 @@ all:
 	temp_tool put $(COPY_FOLDER_REL)
 	ls "$(TEMPLATES_HOME_DIR)"
 
-refresh: clean-venv virtual-install-pack source-rc
+refresh: virtual-install-pack source-rc
 
 clean-templates:
 	rm -rf\
@@ -18,14 +18,15 @@ clean-templates:
 		"$(TEMPLATES_HOME_DIR)/c"\
 
 clean-venv:
-	rm -rf venv
-	rm -rf *.egg*
+	rm -rf setup/venv
+	rm -rf setup/*.egg*
 
 source-rc:
 	source ~/.zshrc
 
 virtual-install-pack: 
-	virtualenv setup/venv
-	. setup/venv/bin/activate
+	virtualenv venv
+	. venv/bin/activate
 	pip install --editable .
 
+.PHONY: clean-venv
