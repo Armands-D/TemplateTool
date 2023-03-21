@@ -19,6 +19,12 @@ def checkRecursion():
 def getTemplateNames(context, param, incomplete):
     return [t for t in os.listdir(TEMPLATES_HOME_DIR)]
 
+def getTermOption(term: str) -> str:
+    # TODO: Add more terminal
+    match term:
+        case "alacritty":
+            return "--working-directory"
+
 @click.group()
 def cli():
     ...
@@ -30,12 +36,10 @@ def edit(templates) -> None:
         template_path = f"{TEMPLATES_HOME_DIR}/{template}"
         if os.path.isdir(template_path):
             subprocess.Popen(
-                [TERM, "--working-directory", f"{template_path}"],
+                [TERM, getTermOption(TERM), f"{template_path}"],
                 stdin=subprocess.PIPE,
                 stdout=subprocess.PIPE
             )
-        else:
-            ...
 
 @cli.command()
 @click.argument('templates', nargs=-1,type=click.STRING, shell_complete=getTemplateNames)
@@ -49,27 +53,26 @@ def get(templates) -> None:
 
 @cli.command()
 @click.argument('templates', nargs=-1, type=click.Path(exists=True))
-def put(templates) -> None:
+def add(templates) -> None:
     for template in templates:
         template_path: str = os.path.abspath(template)
         if os.path.isdir(template_path):
             if template_path in TEMPLATES_HOME_DIR:
                 click.echo("Error: Recursive Directory")
                 return
-            click.echo(template_path)
             click.echo("Templates Copied:")
             list_dir(template_path)
             template_name: str = template_path.split("/")[-1]
             copy_tree(f"{template_path}", f"{TEMPLATES_HOME_DIR}/{template_name}")
             continue
         elif os.path.isfile(template):
+            # TODO: HANDLE
             click.echo("TODO: No Impl")
             continue
         click.echo("Error: Not a directory")
 
 @cli.command()
-@click.argument('tmp', nargs=-1, type=click.STRING, shell_complete=getTemplateNames)
-def list(tmp) -> None:
+def list() -> None:
     print("Templates List:")
     list_dir(f"{TEMPLATES_HOME_DIR}")
 
