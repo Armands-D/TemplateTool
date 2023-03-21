@@ -73,7 +73,6 @@ def add(templates) -> None:
 
 @cli.command()
 def list() -> None:
-    print("Templates List:")
     list_dir(f"{TEMPLATES_HOME_DIR}")
 
 if __name__ == '__main__':
