@@ -3,10 +3,12 @@
 # BUILT-IN
 import os
 from distutils.dir_util import copy_tree
+import subprocess
 # DEPENDENCY
 import click
 script_dir = os.path.dirname(os.path.realpath(__file__))
 TEMPLATES_HOME_DIR=f"{script_dir}/templates"
+TERM="alacritty"
 
 def list_dir(path: str) -> None:
     for d in os.listdir(path):click.echo(d)
@@ -14,19 +16,34 @@ def list_dir(path: str) -> None:
 def checkRecursion():
     ...
 
+def getTemplateNames(context, param, incomplete):
+    return [t for t in os.listdir(TEMPLATES_HOME_DIR)]
+
 @click.group()
 def cli():
     ...
 
-def getTemplateNames(context, param, incomplete):
-    return [t for t in os.listdir(TEMPLATES_HOME_DIR)]
+@cli.command()
+@click.argument('templates', nargs=-1,type=click.STRING, shell_complete=getTemplateNames)
+def edit(templates) -> None:
+    for template in templates:
+        template_path = f"{TEMPLATES_HOME_DIR}/{template}"
+        if os.path.isdir(template_path):
+            subprocess.Popen(
+                [TERM, "--working-directory", f"{template_path}"],
+                stdin=subprocess.PIPE,
+                stdout=subprocess.PIPE
+            )
+        else:
+            ...
 
 @cli.command()
 @click.argument('templates', nargs=-1,type=click.STRING, shell_complete=getTemplateNames)
 def get(templates) -> None:
     for template in templates:
-        if os.path.isdir(f"{TEMPLATES_HOME_DIR}/{template}"):
-            copy_tree(f"{TEMPLATES_HOME_DIR}/{template}", os.getcwd())
+        template_path = f"{TEMPLATES_HOME_DIR}/{template}"
+        if os.path.isdir(template_path):
+            copy_tree(template_path, os.getcwd())
         else:
             click.echo(f"Error: {template} is not a directory." )
 
