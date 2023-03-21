@@ -19,14 +19,16 @@ def cli():
     ...
 
 def getTemplateNames(context, param, incomplete):
-    return ["1", "2"]
-
+    return [t for t in os.listdir(TEMPLATES_HOME_DIR)]
 
 @cli.command()
-@click.argument('templates', nargs=-1)
+@click.argument('templates', nargs=-1,type=click.STRING, shell_complete=getTemplateNames)
 def get(templates) -> None:
     for template in templates:
-        copy_tree(f"{TEMPLATES_HOME_DIR}/{template}", os.getcwd())
+        if os.path.isdir(f"{TEMPLATES_HOME_DIR}/{template}"):
+            copy_tree(f"{TEMPLATES_HOME_DIR}/{template}", os.getcwd())
+        else:
+            click.echo(f"Error: {template} is not a directory." )
 
 @cli.command()
 @click.argument('templates', nargs=-1, type=click.Path(exists=True))
@@ -42,11 +44,10 @@ def put(templates) -> None:
             list_dir(template_path)
             template_name: str = template_path.split("/")[-1]
             copy_tree(f"{template_path}", f"{TEMPLATES_HOME_DIR}/{template_name}")
-            break
+            continue
         elif os.path.isfile(template):
             click.echo("TODO: No Impl")
-            break
-        
+            continue
         click.echo("Error: Not a directory")
 
 @cli.command()
