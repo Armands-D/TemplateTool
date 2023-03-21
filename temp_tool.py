@@ -38,8 +38,12 @@ def put(templates) -> None:
     for template in templates:
         template_path: str = os.path.abspath(template)
         if os.path.isdir(template_path):
+            if template_path in TEMPLATES_HOME_DIR:
+                click.echo("Error: Recursive Directory")
+                return
             click.echo(template_path)
             list_dir(template_path)
+            click.echo(template_path in TEMPLATES_HOME_DIR)
             # TODO: Fix recursion issue
             #copy_tree(f"{template_path}", f"{TEMPLATES_HOME_DIR}/{template_dir_name}")
             break
