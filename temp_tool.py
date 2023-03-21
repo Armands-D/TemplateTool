@@ -11,6 +11,9 @@ TEMPLATES_HOME_DIR=f"{script_dir}/templates"
 def list_dir(path: str) -> None:
     for d in os.listdir(path):click.echo(d)
 
+def checkRecursion():
+    ...
+
 @click.group()
 def cli():
     ...
@@ -26,20 +29,24 @@ def get(templates) -> None:
         copy_tree(f"{TEMPLATES_HOME_DIR}/{template}", os.getcwd())
 
 @cli.command()
-@click.argument('templates', nargs=-1)
+@click.argument('templates', nargs=-1, type=click.Path(exists=True))
 def put(templates) -> None:
+    if len(templates) == 0:
+        #TODO: Add current directory
+        ...
+
     for template in templates:
-        cwd: str = os.getcwd()
-        template_path : str = f"{cwd}/{template}"
-        template_dir_name : str = os.path.dirname(template_path).split("/")[-1]
+        template_path: str = os.path.abspath(template)
         if os.path.isdir(template_path):
-            click.echo(template_dir_name)
-            list_dir(template)
+            click.echo(template_path)
+            list_dir(template_path)
             # TODO: Fix recursion issue
             #copy_tree(f"{template_path}", f"{TEMPLATES_HOME_DIR}/{template_dir_name}")
-            ...
-        else:
-            click.echo("Error: Not a direcotry")
+            break
+        elif os.path.isfile(template):
+            break
+        
+        click.echo("Error: Not a directory")
 
 @cli.command()
 @click.argument('tmp', nargs=-1, type=click.STRING, shell_complete=getTemplateNames)
