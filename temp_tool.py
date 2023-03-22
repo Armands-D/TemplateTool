@@ -11,10 +11,10 @@ script_dir = os.path.dirname(os.path.realpath(__file__))
 TEMPLATES_HOME_DIR=f"{script_dir}/templates"
 TERM="alacritty"
 
-def list_dir(path: str) -> None:
+def printDirList(path: str) -> None:
     for d in os.listdir(path):click.echo(d)
 
-def nestedPath(path1: str, path2: str):
+def isNestedPath(path1: str, path2: str):
     cond1: bool = path1 in path2 
     cond2: bool = path2 in path1 
     return cond1 or cond2
@@ -63,7 +63,7 @@ def add(templates) -> None:
     for template in templates:
         template_path: str = os.path.abspath(template)
         if os.path.isdir(template_path):
-            if nestedPath(template_path, TEMPLATES_HOME_DIR):
+            if isNestedPath(template_path, TEMPLATES_HOME_DIR):
                 click.echo("Error: Recursive Directory")
                 continue
             template_name: str = template_path.split("/")[-1]
@@ -78,7 +78,7 @@ def add(templates) -> None:
 
 @cli.command()
 def list() -> None:
-    list_dir(f"{TEMPLATES_HOME_DIR}")
+    printDirList(f"{TEMPLATES_HOME_DIR}")
 
 if __name__ == '__main__':
     cli()
