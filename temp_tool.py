@@ -6,6 +6,7 @@ from distutils.dir_util import copy_tree
 import subprocess
 # DEPENDENCY
 import click
+
 script_dir = os.path.dirname(os.path.realpath(__file__))
 TEMPLATES_HOME_DIR=f"{script_dir}/templates"
 TERM="alacritty"
@@ -64,7 +65,7 @@ def add(templates) -> None:
         if os.path.isdir(template_path):
             if nestedPath(template_path, TEMPLATES_HOME_DIR):
                 click.echo("Error: Recursive Directory")
-                return
+                continue
             click.echo("Templates Copied:")
             list_dir(template_path)
             template_name: str = template_path.split("/")[-1]
