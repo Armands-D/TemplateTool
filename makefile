@@ -16,6 +16,7 @@ clean-templates:
 		"$(TEMPLATES_HOME_DIR)/a"\
 		"$(TEMPLATES_HOME_DIR)/b"\
 		"$(TEMPLATES_HOME_DIR)/c"\
+		"$(TEMPLATES_HOME_DIR)/t"\
 
 clean-venv:
 	rm -rf setup/venv

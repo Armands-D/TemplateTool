@@ -34,12 +34,13 @@ def cli():
 def edit(templates) -> None:
     for template in templates:
         template_path = f"{TEMPLATES_HOME_DIR}/{template}"
-        if os.path.isdir(template_path):
-            subprocess.Popen(
-                [TERM, getTermOption(TERM), f"{template_path}"],
-                stdin=subprocess.PIPE,
-                stdout=subprocess.PIPE
-            )
+        if not os.path.isdir(template_path):
+            os.makedirs(template_path)
+        subprocess.Popen(
+            [TERM, getTermOption(TERM), template_path],
+            stdin=subprocess.PIPE,
+            stdout=subprocess.PIPE
+        )
 
 @cli.command()
 @click.argument('templates', nargs=-1,type=click.STRING, shell_complete=getTemplateNames)
@@ -63,6 +64,7 @@ def add(templates) -> None:
             click.echo("Templates Copied:")
             list_dir(template_path)
             template_name: str = template_path.split("/")[-1]
+            click.echo(template_path)
             copy_tree(f"{template_path}", f"{TEMPLATES_HOME_DIR}/{template_name}")
             continue
         elif os.path.isfile(template):
