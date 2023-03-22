@@ -19,8 +19,8 @@ def nestedPath(path1: str, path2: str):
     cond2: bool = path2 in path1 
     return cond1 or cond2
 
-def getTemplateNames(context, param, incomplete) -> list[str]:
-    return [t for t in os.listdir(TEMPLATES_HOME_DIR)]
+def templateCompletion(context, param, incomplete) -> list[str]:
+    return [t for t in os.listdir(TEMPLATES_HOME_DIR) if t.startswith(incomplete)]
 
 def getTermOption(term: str) -> str:
     # TODO: Add more terminal
@@ -35,7 +35,7 @@ def cli():
     ...
 
 @cli.command()
-@click.argument('templates', nargs=-1,type=click.STRING, shell_complete=getTemplateNames)
+@click.argument('templates', nargs=-1,type=click.STRING, shell_complete=templateCompletion)
 def edit(templates) -> None:
     for template in templates:
         template_path = f"{TEMPLATES_HOME_DIR}/{template}"
@@ -48,7 +48,7 @@ def edit(templates) -> None:
         )
 
 @cli.command()
-@click.argument('templates', nargs=-1,type=click.STRING, shell_complete=getTemplateNames)
+@click.argument('templates', nargs=-1,type=click.STRING, shell_complete=templateCompletion)
 def get(templates) -> None:
     for template in templates:
         template_path = f"{TEMPLATES_HOME_DIR}/{template}"
@@ -66,8 +66,6 @@ def add(templates) -> None:
             if nestedPath(template_path, TEMPLATES_HOME_DIR):
                 click.echo("Error: Recursive Directory")
                 continue
-            click.echo("Templates Copied:")
-            list_dir(template_path)
             template_name: str = template_path.split("/")[-1]
             click.echo(template_path)
             copy_tree(f"{template_path}", f"{TEMPLATES_HOME_DIR}/{template_name}")
