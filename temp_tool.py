@@ -10,6 +10,7 @@ import click
 script_dir = os.path.dirname(os.path.realpath(__file__))
 TEMPLATES_HOME_DIR=f"{script_dir}/templates"
 TERM="alacritty"
+GLOBAL_VAR = "INITIAL"
 
 def printDirList(path: str) -> None:
     for d in os.listdir(path):click.echo(d)
@@ -23,7 +24,7 @@ def templateCompletion(context, param, incomplete) -> list[str]:
     return [t for t in os.listdir(TEMPLATES_HOME_DIR) if t.startswith(incomplete)]
 
 def getTermOption(term: str) -> str:
-    # TODO: Add more terminal
+    # TODO: Add more terminals
     match term:
         case "alacritty":
             return "--working-directory"
@@ -32,6 +33,19 @@ def getTermOption(term: str) -> str:
 
 @click.group()
 def cli():
+    ...
+
+@cli.command()
+@click.argument('templates', nargs=-1, type=click.STRING, shell_complete=templateCompletion)
+def rem(templates):
+    for template in templates:
+        template_path: str = os.path.abspath(template)
+        if os.path.isdir(template_path):
+            if isNestedPath(template_path, TEMPLATES_HOME_DIR):
+                click.echo("Error: Recursive Directory")
+                continue
+            ...
+    click.confirm("Are you sure?", abort=True)
     ...
 
 @cli.command()
