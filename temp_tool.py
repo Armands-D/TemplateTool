@@ -13,10 +13,12 @@ TERM="alacritty"
 def list_dir(path: str) -> None:
     for d in os.listdir(path):click.echo(d)
 
-def checkRecursion():
-    ...
+def nestedPath(path1: str, path2: str):
+    cond1: bool = path1 in path2 
+    cond2: bool = path2 in path1 
+    return cond1 or cond2
 
-def getTemplateNames(context, param, incomplete):
+def getTemplateNames(context, param, incomplete) -> list[str]:
     return [t for t in os.listdir(TEMPLATES_HOME_DIR)]
 
 def getTermOption(term: str) -> str:
@@ -58,7 +60,7 @@ def add(templates) -> None:
     for template in templates:
         template_path: str = os.path.abspath(template)
         if os.path.isdir(template_path):
-            if template_path in TEMPLATES_HOME_DIR or TEMPLATES_HOME_DIR in template_path:
+            if nestedPath(template_path, TEMPLATES_HOME_DIR):
                 click.echo("Error: Recursive Directory")
                 return
             click.echo("Templates Copied:")
