@@ -26,6 +26,8 @@ def getTermOption(term: str) -> str:
     match term:
         case "alacritty":
             return "--working-directory"
+        case "gnome-terminal":
+            return "--working-directory"
 
 @click.group()
 def cli():
