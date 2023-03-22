@@ -58,7 +58,7 @@ def add(templates) -> None:
     for template in templates:
         template_path: str = os.path.abspath(template)
         if os.path.isdir(template_path):
-            if template_path in TEMPLATES_HOME_DIR:
+            if template_path in TEMPLATES_HOME_DIR or TEMPLATES_HOME_DIR in template_path:
                 click.echo("Error: Recursive Directory")
                 return
             click.echo("Templates Copied:")
